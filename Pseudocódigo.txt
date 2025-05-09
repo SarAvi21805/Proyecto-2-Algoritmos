@@ -1,0 +1,20 @@
+Entrada:
+	-Datos iniciales del usuario
+	-Respuestas del formulario basados en gustos personales, académicos y rasgos de la personalidad.
+Proceso:
+	1.Obtener todos los puntajes relacionados al formulario
+	2.Crear un nodo con los datos del usuario
+	3.Por cada respuesta
+		a. Buscar el nodo de característica correspondiente (gusto personal, académico, rasgo de 			personalidad)
+		b. Crear la relación entre el usuario y la característica, usando el puntaje como peso
+	4.Por cada carrera
+		a. Identificar las características relacionadas a la carrera
+		b. Comprobar si existe la relación entre el usuario y la característica
+		c. Sumar las importancias relacionadas al usuario y carrera
+		d. Obtener el promedio de todas las importancias relacionadas a la carrera
+	5.Ordenar las carreras por puntuación total, los puntajes mayores indican mayor afinidad
+	6.Seleccionar 5 carreras con mayores promedios
+	7.De las carreras seleccionadas, obtener todos los datos relacionados a ella, como la universidad donde 		se imparte
+	8.Mostrar listado de carreras recomendadas al usuario
+Salida:
+	-Listado de carreras por afinidad
