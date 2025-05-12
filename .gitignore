@@ -24,3 +24,48 @@ hs_err_pid*
 replay_pid*
 
 Backend/.env
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+ENV/
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/
+
+# Archivos de configuración de sistemas operativos
+.DS_Store         # macOS
+Thumbs.db         # Windows
+
+# Archivos de pruebas
+nosetests.xml
+coverage.xml
+*.cover
+*.hypothesis/
+
+# Archivos temporales
+*.log
+*.pot
+*.swp
+*~
+
+# Dependencias (si usas pipenv o poetry, por ejemplo)
+Pipfile.lock
+poetry.lock
+
+# Archivos generados por el sistema operativo o IDEs
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Archivos de configuración específicos de entornos virtuales
+tox/
+.coverage
+*.env
