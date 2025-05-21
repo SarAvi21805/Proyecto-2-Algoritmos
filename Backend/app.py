@@ -47,6 +47,18 @@ def getUniversidades():
         print("Error obtener universidades: ", e)
         return jsonify({"message": e})
 
+@app.route("/carreras", methods=["GET"])
+def getCarreras():
+    try:
+        with driver.session() as session:
+            result = session.run("MATCH (p:Carrera) RETURN p")
+            carreras = []
+            for record in result:
+                carreras.append(dict(record["p"].items()))
+            return jsonify(carreras)
+    except Neo4jError as e:
+        print("Error obtener carreras: ", e)
+        return jsonify({"message" : e})
 
 @app.route('/login', methods=['POST'])
 def login():
