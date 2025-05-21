@@ -4,6 +4,7 @@ import atexit
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from neo4j import GraphDatabase
+from neo4j.exceptions import Neo4jError
 
 load_dotenv()
 # Cargar variables de entorno de para su uso en el driver
@@ -11,7 +12,7 @@ uri = os.getenv('NEO4J_URI')
 user = 'neo4j'
 password = os.getenv('NEO4J_PASSWORD')
 # Cargar el driver
-driver = GraphDatabase.driver(uri, auth=(user, password))
+driver = GraphDatabase.driver(uri, auth=(user, password) )
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -28,8 +29,23 @@ def getUsers():
                 users.append(dict(record['p'].items()))
             return jsonify(users)
         
-    except Exception as e:
+    except Neo4jError as e:
         print('Error obtener usuarios: ', e)
+        return jsonify({"message": e})
+
+@app.route("/universidades", methods=["GET"])
+def getUniversidades():
+    try:
+        with driver.session() as session:
+            result = session.run("MATCH (p:Universidad) RETURN p")
+            universidades = []
+            for record in result:
+                universidades.append(dict(record["p"].items()))
+            return jsonify(universidades)
+        
+    except Neo4jError as e:
+        print("Error obtener universidades: ", e)
+        return jsonify({"message": e})
 
 
 @app.route('/login', methods=['POST'])
@@ -57,8 +73,9 @@ def login():
                     }), 200
             else:
                 return jsonify({'respuesta': 'Contraseña incorrecta'}), 200
-    except Exception as e:
+    except Neo4jError as e:
         print('Error al hacer login:', e)
+        return jsonify({"message": e})
 
 #Cambio de contraseña
 @app.route('/changePassword', methods=['PUT'])
@@ -130,7 +147,7 @@ def fillform():
     return jsonify({'message': 'Relaciones creadas correctamente'}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8080)
 
 @atexit.register
 def closeDriver():
