@@ -8,17 +8,15 @@ import { AuthProvider } from './context/AccesoContext';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <NavBar></NavBar>
-        <Routes>
-          <Route path="/" element={<Home title='Página de inicio'/>}/>
-          <Route path='/principal' element={<Principal/>}/>
-          <Route path='/form' element={<Form/>}/>
-          <Route path='/access' element={<Auth/>}/>
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <Router>
+      <NavBar></NavBar>
+      <Routes>
+        <Route path="/" element={<Home title='"El futuro pertenece a aquellos que creen en la belleza de sus sueños." - Eleanor Roosevelt'/>}/>
+        <Route path='/principal' element={<Principal/>}/>
+        <Route path='/form' element={<Form/>}/>
+        <Route path='/access' element={<Auth/>}/>
+      </Routes>
+    </Router>
   )
 }
 
