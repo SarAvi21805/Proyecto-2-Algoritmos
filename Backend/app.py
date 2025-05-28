@@ -3,6 +3,7 @@ import bcrypt
 import atexit
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
 
@@ -14,6 +15,7 @@ password = os.getenv('NEO4J_PASSWORD')
 # Cargar el driver
 driver = GraphDatabase.driver(uri, auth=(user, password) )
 app = Flask(__name__)
+CORS(app, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
 
 @app.route('/', methods=['GET'])
 def index():
@@ -103,6 +105,45 @@ def getBecas():
     except Neo4jError as e:
         print("Error al obtener información de las becas: ", e)
         return jsonify({"message": str(e)}), 500
+
+@app.route('/recomendation', methods=['GET'])
+def recomendation():
+    correoIN = request.args.get('correo')
+    if not correoIN:
+        return jsonify({"Error": "Falta el parámetro 'correo'"}), 400
+                
+    try:
+        with driver.session() as session:
+            result = session.run(
+                    """
+                        MATCH (u:Usuario {correo: $correo})-[r1]-(carac:Academicos|Personalidad|Hobbie)-[r2:CARACTERISTICA_DE]->(car:Carrera)
+                        WITH car, sum(r1.peso + r2.peso) AS pesototal
+                        MATCH (carac2:Academicos|Personalidad|Hobbie)-[r3:CARACTERISTICA_DE]->(car)
+                        WITH car, pesototal,
+                            count(r3) AS cantRelacionesCaC,
+                            sum(r3.peso) AS sumaPesosCaC
+
+                        WITH car, pesototal, cantRelacionesCaC, sumaPesosCaC,
+                            (cantRelacionesCaC * 10 + sumaPesosCaC) AS pesoMax,
+                            100*(toFloat(pesototal) / (cantRelacionesCaC * 10 + sumaPesosCaC)) AS promedio
+
+                        RETURN car.nombre AS Carrera,
+                            promedio AS Promedio
+                        ORDER BY promedio DESC LIMIT 5
+                    """, {'correo': correoIN}
+            )
+            recomendaciones = []
+            for record in result:
+                recomendaciones.append(
+                    {
+                        "carrera": record['Carrera'],
+                        "promedio": record['Promedio']
+                    }
+                )
+            return jsonify(recomendaciones), 200
+    except Neo4jError as e:
+        print("Error al obtener recomendaciones: ", e)
+        return jsonify({'error': 'Error al obtener recomendaciones', "message": e}), 400
 
 @app.route('/login', methods=['POST'])
 def login():
