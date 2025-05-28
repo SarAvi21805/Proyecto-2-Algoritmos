@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {Box, Container, Typography, Paper, CircularProgress, Divider, Rating, Pagination, Button} from '@mui/material';
 import type { Pregunta } from './Preguntas.ts';
 import PreguntasData from '../../assets/Preguntas.json';
+import { useAuth } from '../../context/AccesoContext.tsx';
 
 const PREGUNTASXPAG = 5;
 
 const Form = () =>{
+    const navigate = useNavigate();
+    const {setAuthState} = useAuth();
     const [preguntas, setPreguntas] = useState<Pregunta[]>([]);
     const [pagActual, setPagActual] = useState(1);
     const [respuestas, setRespuestas] = useState<Record<number, number>>({});
@@ -25,6 +29,13 @@ const Form = () =>{
         setPagActual(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
+    const enviarRespuestas = (): void =>{
+        setAuthState('logged')
+        setTimeout(() => {
+            navigate('/principal')
+        }, 1000);
+    }
 
     useEffect(()=>{
         const timer = setTimeout(() => {
@@ -73,6 +84,7 @@ const Form = () =>{
                                     size="large" 
                                     sx={{ px: 6, py: 1.5 }}
                                     color='success'
+                                    onClick={enviarRespuestas}
                                     >
                                     Enviar Respuestas
                                     </Button>
