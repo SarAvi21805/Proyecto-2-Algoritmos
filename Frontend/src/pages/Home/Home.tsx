@@ -10,10 +10,10 @@ const Home: React.FC<HomeProps> = ({title = "Inicio"}) => {
     return( 
         <Box>
             <Container maxWidth='lg'>
-                <Typography variant="h2" sx={{color: 'white', mt: 5, mb: 5}}>
+                <Typography variant="h3" sx={{color: 'white', mt: 5, mb: 5}}>
                     {title}
                 </Typography>
-                <Grid container spacing={12} sx={{width:'100%', margin:0}} justifyContent='center'>
+                <Grid container spacing={5} sx={{width:'100%', margin:0}} justifyContent='center'>
                     <Grid>
                         <CardInfo 
                             title="Misión" 
@@ -40,9 +40,14 @@ const Home: React.FC<HomeProps> = ({title = "Inicio"}) => {
                     
                 </Typography>
                 <img 
-                    src="https://sl.bing.net/deeM0q5lPYi"
-                    alt="Descripción de la imagen" 
-                    style={{ width: '100%', height: 'auto', marginBottom: '20px' }} // Estilos opcionales
+                    src="/Estudiantes.jpg" //Ruta relativa
+                    style={{ 
+                        width: '100%',
+                        height: '50vh',
+                        marginBottom: '20px',
+                        borderRadius: '50px',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                        opacity: 100}}
                 />
             </Container>
         </Box>
