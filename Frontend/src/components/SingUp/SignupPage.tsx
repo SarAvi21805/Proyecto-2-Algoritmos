@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent } from "react";
+import {Link} from "react-router-dom"
 
 // Material UI Imports
 import {
@@ -165,6 +166,8 @@ export default function SignUp() {
           fullWidth
           startIcon={<LoginIcon />}
           onClick={handleSubmit}
+          component = {Link}
+          to= "/form"
         >
           Iniciar Sesión
         </Button>
@@ -181,13 +184,6 @@ export default function SignUp() {
           <Alert severity="success">{success}</Alert>
         </Stack>
       )}
-
-      <div style={{ marginTop: "7px", fontSize: "10px" }}>
-        Ya tienes una cuenta?{" "}
-        <small style={{ textDecoration: "underline", color: "blue" }}>
-          Iniciar Sesión
-        </small>
-      </div>
     </div>
   );
 }

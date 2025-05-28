@@ -6,8 +6,8 @@ import Chip from '@mui/material/Chip';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import LockIcon from '@mui/icons-material/Lock';
 import Switch from '@mui/material/Switch';
-import SignUp from "./SignupPage";
-import Login from "./LoginPage";
+import SignUp from "../../components/SingUp/SignupPage";
+import Login from "../../components/Login/LoginPage";
 
 export default function Auth(){
     const [checked, setChecked] = useState(true);
@@ -23,7 +23,7 @@ export default function Auth(){
                 ):(
                 <Chip icon={<LockIcon />} label="Iniciar Sesión" color= "primary" variant="outlined" />
                 )}
-                <br />
+            
                 <Switch
                     checked={checked}
                     onChange={handleChange}

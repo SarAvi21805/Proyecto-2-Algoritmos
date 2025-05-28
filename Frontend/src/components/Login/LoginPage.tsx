@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent, type MouseEvent } from "react";
+import {Link} from "react-router-dom"
 
 // Material UI imports
 import {
@@ -140,6 +141,8 @@ export default function Login() {
           fullWidth
           startIcon={<LoginIcon />}
           onClick={handleSubmit}
+          component = {Link}
+          to= "/principal"
         >
           Iniciar Sesión
         </Button>
@@ -160,13 +163,6 @@ export default function Login() {
           </Alert>
         </Stack>
       )}
-
-      <div style={{ marginTop: "7px", fontSize: "10px" }}>
-        No tienes una cuenta?{" "}
-        <small style={{ textDecoration: "underline", color: "blue" }}>
-          Registrarse
-        </small>
-      </div>
     </div>
   );
 }

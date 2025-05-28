@@ -20,7 +20,7 @@ const NavBar = () =>{
                     {isLog ? (
                         <Button variant="contained" color="error" component={Link} to='/' onClick={()=>{setIsLog(false)}}>Cerrar Sesión</Button>
                     ):(
-                        <Button variant='contained' color="success" component={Link} to='/principal' onClick={()=>{setIsLog(true)}}>Acceder</Button>
+                        <Button variant='contained' color="success" component={Link} to='/access' onClick={()=>{setIsLog(true)}}>Acceder</Button>
                     )}
                 </Toolbar>
             </AppBar>
