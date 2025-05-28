@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent, type MouseEvent } from "react";
-import {Link} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
+import { useAuth } from "../../context/AccesoContext";
 
 // Material UI imports
 import {
@@ -24,6 +25,8 @@ const isEmail = (email: string): boolean =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 export default function Login() {
+  const navigate = useNavigate();
+  const {setAuthState} = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   // Inputs
@@ -82,6 +85,10 @@ export default function Login() {
     setFormValid(null);
 
     setSuccess("Se ingresaron los datos correctamente");
+    setAuthState('logged');
+    setTimeout(() => {
+      navigate('/principal');
+    }, 1000);
   };
 
   return (
@@ -141,8 +148,6 @@ export default function Login() {
           fullWidth
           startIcon={<LoginIcon />}
           onClick={handleSubmit}
-          component = {Link}
-          to= "/principal"
         >
           Iniciar Sesión
         </Button>
