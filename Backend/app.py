@@ -84,6 +84,25 @@ def getCarrera():
     except Neo4jError as e:
         print("Error al obtener información de la carrera: ", e)
         return jsonify({"message": str(e)}), 500
+    
+# Obtener becas
+@app.route("/becas", methods=['GET'])
+def getBecas():
+    try:
+        with driver.session() as session:
+            consulta = """
+            MATCH (b:Becas)
+            RETURN b.nombre AS Nombre, b.descripcion AS Descripcion, b.masInformacion AS MasInformacion
+            """
+            result = session.run(consulta)
+            becas_info = []
+            for record in result:
+                becas_info.append(dict(record))
+            return jsonify(becas_info)
+        
+    except Neo4jError as e:
+        print("Error al obtener información de las becas: ", e)
+        return jsonify({"message": str(e)}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
