@@ -15,17 +15,17 @@ const CardInfo: React.FC<Props> = ({ carrera='Sin datos', afinidad= 'Sin datos',
                     <CardActionArea>
                         <CardMedia component='img' image={image} height="200"/>
                     </CardActionArea>
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component='div'>
-                                {carrera}
-                            </Typography>
-                            <Typography variant="body1" sx={{color: 'text.secondary'}}>
-                                Afinidad: {afinidad}%
-                            </Typography>
-                            <CardActions sx={{display:'flex', justifyContent:'flex-end'}}>
-                                <Button variant="contained" color="success" size="small">Detalles</Button>
-                            </CardActions>
-                        </CardContent>
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component='div'>
+                            {carrera}
+                        </Typography>
+                        <Typography variant="body1" sx={{color: 'text.secondary'}}>
+                            Afinidad: {afinidad}%
+                        </Typography>
+                        <CardActions sx={{display:'flex', justifyContent:'flex-end'}}>
+                            <Button variant="contained" color="success" size="small">Detalles</Button>
+                        </CardActions>
+                    </CardContent>
                 </Card>
             </Paper>
         </>
