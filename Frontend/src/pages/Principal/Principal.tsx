@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Grid, Typography} from '@mui/material';
+import { Alert, Box, CircularProgress, Container, Grid, Typography} from '@mui/material';
 import CardRecom from '../../components/CardRecom';
 import api from '../../api/Api';
 
@@ -10,21 +10,54 @@ interface Recomendacion{
 
 const Principal = () => {
     const [recomendaciones, setRecomendaciones] = useState<Recomendacion[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const getRecomendations = async (userName: string) =>{
-    try {
+        try {
             const response = await api.get(`/recomendation?correo=${userName}`);
             setRecomendaciones(response.data);
         } catch (error) {
             console.error(error)
             throw new Error('Error obteniendo recomendaciones');
+        }finally{
+            setLoading(false);
         }
     }
 
-    useEffect(()=>{
-        getRecomendations('sergio123@gmail.com');
-        console.log(recomendaciones)
-    }, [])
+    useEffect(() => {
+        // Obtener el correo del localStorage
+        const userEmail = localStorage.getItem('correo');
+        
+        if (!userEmail) {
+            setError('No se encontró el correo del usuario');
+            setLoading(false);
+            return;
+        }
+
+        // Usar el correo obtenido del localStorage
+        getRecomendations(userEmail);
+    }, []);
+
+    if (loading) {
+        return (
+            <Box textAlign="center" py={8}>
+                <CircularProgress size={60} />
+                <Typography sx={{ mt: 2 }}>Cargando recomendaciones...</Typography>
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container maxWidth="lg">
+                <Alert severity="error" sx={{ mt: 4 }}>
+                    {error}
+                </Alert>
+            </Container>
+        );
+    }
+
     return (
         <Box>
             <Container maxWidth='lg'>
@@ -40,9 +73,10 @@ const Principal = () => {
                                 </Grid>
                             ))
                         ):(
-                            <Typography>
-                                No hay recomendaciones
-                            </Typography>
+                            <Box textAlign="center" py={8}>
+                                <CircularProgress size={60} />
+                                <Typography sx={{ mt: 2 }}>Cargando preguntas...</Typography>
+                            </Box>
                         )
                     }
                 </Grid>
