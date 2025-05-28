@@ -16,7 +16,7 @@ export default function Auth(){
         setChecked(event.target.checked);
     };
     return(
-        <div style={{backgroundColor: "#fbf7d3" , maxWidth: 500, margin: "auto", padding:30 }}>
+        <div style={{maxWidth: 500, margin: "auto", padding:30 }}>
             <Paper elevation={3} style={{padding: "10px"}}>
                 {checked ? (
                 <Chip icon={<SentimentSatisfiedAltIcon />} label="Registrarse" color= "primary" variant="outlined"/>
