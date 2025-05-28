@@ -6,9 +6,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Logo from '../../../public/Unicap.svg';
 import {Button} from "@mui/material";
+import { useAuth } from "../../context/AccesoContext";
+
 
 const NavBar = () =>{
-    const [isLog, setIsLog] = React.useState(false);
+    const {authState, setAuthState} = useAuth();
     return(
         <Box sx={{flexGrow: 1}} >
             <AppBar position="static" sx={{minHeight:60, backgroundColor: "#01045f"}}>
@@ -17,10 +19,14 @@ const NavBar = () =>{
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Recomendaciones Universitarias
                     </Typography>
-                    {isLog ? (
-                        <Button variant="contained" color="error" component={Link} to='/' onClick={()=>{setIsLog(false)}}>Cerrar Sesión</Button>
-                    ):(
-                        <Button variant='contained' color="success" component={Link} to='/access' onClick={()=>{setIsLog(true)}}>Acceder</Button>
+                    {authState === 'access' && (
+                        <></>
+                    )}
+                    {authState === 'home' && (
+                        <Button variant='contained' color="success" component={Link} to='/access' onClick={()=>{setAuthState('access')}}>Acceder</Button>
+                    )}
+                    {authState === 'logged' && (
+                        <Button variant="contained" color="error" component={Link} to='/' onClick={()=>{setAuthState('home')}}>Cerrar Sesión</Button>
                     )}
                 </Toolbar>
             </AppBar>

@@ -4,6 +4,7 @@ import Principal from './pages/Principal';
 import Form from './pages/Forms';
 import NavBar from './components/NavBar';
 import Auth from './pages/Access'
+import { AuthProvider } from './context/AccesoContext';
 
 function App() {
   return (
