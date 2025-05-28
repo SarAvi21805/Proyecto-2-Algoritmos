@@ -8,7 +8,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 
 interface CardProps {
     title?: string;
-    content?: string;
+    content?: string | string[];
 }
 
 const CardInfo: React.FC<CardProps> = ({title="Card", content="Contenido de la card"}) =>{
@@ -21,9 +21,17 @@ const CardInfo: React.FC<CardProps> = ({title="Card", content="Contenido de la c
                         <Typography gutterBottom variant="h5" component='div'>
                             {title}
                         </Typography>
-                        <Typography variant="body1" sx={{color: 'text.secondary'}}>
-                            {content}
-                        </Typography>
+                        {typeof content === 'string' ? (
+                            <Typography variant="body1" sx={{color: 'text.secondary'}}>
+                                {content}
+                            </Typography>
+                        ) : Array.isArray(content) ? (
+                            content.map((item, index) => (
+                                <Typography key={index} variant="body1" sx={{color: 'text.secondary'}}>
+                                    {item}
+                                </Typography>
+                            ))
+                        ) : null}
                     </CardContent>
                 </CardActionArea>
             </Card>
