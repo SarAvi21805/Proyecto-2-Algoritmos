@@ -59,6 +59,31 @@ def getCarreras():
     except Neo4jError as e:
         print("Error obtener carreras: ", e)
         return jsonify({"message" : e})
+    
+# Obtener detalles de las carreras.
+@app.route("/carrera", methods=['GET'])
+def getCarrera():
+    nombre_carrera = request.args.get("nombre")
+    if not nombre_carrera:
+        return jsonify({"Error": "Falta el parámetro 'nombre"}), 400
+    
+    try:
+        with driver.session() as session:
+            consulta = """
+            MATCH (c:Carrera {nombre: $nombre})-[r:IMPARTIDA_EN]-(u:Universidad)
+            WITH c, COLLECT(r.pensum) AS pensum, COLLECT(u.nombre) As universidades,
+            COLLECT(r.nombreEspecifico) AS nombresEsp, COLLECT(r.duracion) AS duraciones
+            RETURN c.nombre AS Carrera, c.descripcion AS Descripción, pensum AS Pensum, nombresEsp AS NombresEspecificos, duraciones AS Duraciones, universidades AS Universidades
+            """
+            result = session.run(consulta, nombre=nombre_carrera)
+            carreras_info = []
+            for record in result:
+                carreras_info.append(dict(record))
+            return jsonify(carreras_info)
+        
+    except Neo4jError as e:
+        print("Error al obtener información de la carrera: ", e)
+        return jsonify({"message": str(e)}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
