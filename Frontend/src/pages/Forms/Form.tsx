@@ -5,9 +5,25 @@ import type { Pregunta } from './Preguntas.ts';
 import PreguntasData from '../../assets/Preguntas.json';
 import { useAuth } from '../../context/AccesoContext.tsx';
 import api from '../../api/Api.ts';
-import axios from 'axios';
 
 const PREGUNTASXPAG = 5;
+const labels: { [index: string]: string } = {
+  0.5: 'Nada identificado',
+  1: 'Mínimamente identificado',
+  1.5: 'Poco identificado',
+  2: 'Algo identificado',
+  2.5: 'Medianamente identificado', 
+  3: 'Identificado',
+  3.5: 'Bastante identificado',
+  4: 'Muy identificado',
+  4.5: 'Extremadamente identificado',
+  5: 'Totalmente identificado'
+};
+
+function getLabelText(value: number) {
+  return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
+}
+
 
 const Form = () =>{
     const navigate = useNavigate();
@@ -15,6 +31,8 @@ const Form = () =>{
     const [preguntas, setPreguntas] = useState<Pregunta[]>([]);
     const [pagActual, setPagActual] = useState(1);
     const [respuestas, setRespuestas] = useState<Record<number, number>>({});
+    const [hoverStates, setHoverStates] = useState<Record<number, number>>({});
+    const [valueStates, setValueStates] = useState<Record<number, number | null>>({});
 
     const indexUltimaPregunta = pagActual * PREGUNTASXPAG;
     const indexPrimeraPregunta = indexUltimaPregunta - PREGUNTASXPAG;
@@ -23,8 +41,17 @@ const Form = () =>{
 
     const cambioPuntuacion = (questionId: number, value: number | null) => {
         if (value !== null) {
-            setRespuestas(prev => ({ ...prev, [questionId]: value }));
+            setRespuestas(prev => ({ ...prev, [questionId]: value*2 }));
         }
+    };
+
+    const handleRatingChange = (questionId: number, newValue: number | null) => {
+        setValueStates(prev => ({ ...prev, [questionId]: newValue }));
+        cambioPuntuacion(questionId, newValue); // Tu función existente que multiplica por 2
+    };
+
+    const handleHoverChange = (questionId: number, newHover: number) => {
+        setHoverStates(prev => ({ ...prev, [questionId]: newHover }));
     };
 
     const cambioPagina = (event: React.ChangeEvent<unknown>, page: number) => {
@@ -87,15 +114,31 @@ const Form = () =>{
                                 <Box>
                                     <Typography variant="h2" sx={{color: 'black', pt:5, pl:5,  mt: 2}}>Formulario</Typography>
                                     <Typography variant="h5" sx={{color: 'black', paddingX: 10, mt: 2, mb: 1, textAlign:'center'}}>A continuación se le presentarán distintas preguntas que deberá contestar de acuerdo a lo identificado que se sienta con ellas.</Typography>
-                                    <Typography variant="h6" sx={{color: 'black', paddingX: 10, mb: 5, textAlign:'center'}}>0 es el menor grado de identificación (Sin seleccionar nada), mientras que 10 es el mayor grado</Typography>
+                                    <Typography variant="h6" sx={{color: 'black', paddingX: 10, mb: 5, textAlign:'center'}}>0 es el menor grado de identificación (Sin seleccionar nada), mientras que 5 es el mayor grado</Typography>
                                     {preguntasActuales.map((item, index) =>{
                                         return(
                                             <Box sx={{marginX:10, mb:5}}>
                                                 <Divider variant='middle'/>
                                                 <Typography key={index} variant='h6' sx={{mt:5}}> {indexPrimeraPregunta + index + 1}. {item.pregunta}</Typography>
-                                                <Rating key={item.caracteristica} max={10} size='large' value={respuestas[indexPrimeraPregunta+index]||null} onChange={(_,value)=>{
-                                                    cambioPuntuacion(indexPrimeraPregunta+index, value);
-                                                }}/>
+                                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', my: 4 }}>
+                                                    <Box sx={{ width: 250, display: 'flex', alignItems: 'center' }}>
+                                                        <Rating key={item.caracteristica} max={5} precision={0.5} size='large' value={(respuestas[indexPrimeraPregunta+index])/2} getLabelText={getLabelText} sx={{'& .MuiRating-icon': {fontSize: '2.5rem',}}} onChange={(_,value)=>{
+                                                            handleRatingChange(indexPrimeraPregunta+index, (value));
+                                                        }} 
+                                                        onChangeActive={(event, newHover) => {handleHoverChange(indexPrimeraPregunta+index, newHover)}}/>
+                                                            {valueStates[indexPrimeraPregunta+index] !== null && (
+                                                                    <Box sx={{ ml: 2 }}>
+                                                                        <Typography variant='body2'>
+                                                                            {labels[
+                                                                                hoverStates[indexPrimeraPregunta+index] !== undefined 
+                                                                                ? hoverStates[indexPrimeraPregunta+index] 
+                                                                                : (valueStates[indexPrimeraPregunta+index] || 0)
+                                                                            ]}
+                                                                        </Typography>
+                                                                    </Box>
+                                                            )}
+                                                    </Box>
+                                                </Box>
                                             </Box>
                                         )
                                     })}

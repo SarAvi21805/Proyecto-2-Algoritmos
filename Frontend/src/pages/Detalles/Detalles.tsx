@@ -1,9 +1,9 @@
-import { Box, Card, CardContent, CircularProgress, Container, Divider, Link, Paper, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CircularProgress, Container, Divider, IconButton, Link, Paper, Typography } from '@mui/material';
 import {Grid} from '@mui/material';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../api/Api';
 import { useEffect, useState } from 'react';
+import { ArrowBack } from '@mui/icons-material';
 
 interface Detalles{
     Carrera: string,
@@ -18,6 +18,7 @@ export default function Detalles() {
     const {nombreCarrera} = useParams<{nombreCarrera: string}>();
     const [carrera, setCarrera] = useState<Detalles>();
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
     
 
     const getDetalles = async () =>{
@@ -52,7 +53,7 @@ export default function Detalles() {
   return (
     <Container maxWidth="lg">
         <Box display="flex" justifyContent="center" mt={5}>
-            <Paper elevation={6} sx={{p: 4,backgroundColor: '#01045f', borderRadius: 2,display: 'inline-block'}}>
+            <Paper elevation={6} sx={{p: 4,backgroundColor: '#01045f', borderRadius: 2,display: 'inline-block', mb:5}}>
                 {
                     loading ? (
                         <Box textAlign="center" py={8}>
@@ -97,6 +98,9 @@ export default function Detalles() {
                         </>
                     )
                 }
+                <Button variant='contained' startIcon={<ArrowBack/>} color='error' size='large' sx={{mb:2, mt:5}} onClick={()=>{navigate(-1)}}>
+                    Regresar
+                </Button>
             </Paper>
         </Box>
     </Container>

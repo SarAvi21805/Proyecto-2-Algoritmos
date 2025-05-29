@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,13 +11,20 @@ import { useAuth } from "../../context/AccesoContext";
 
 const NavBar = () =>{
     const {authState, setAuthState} = useAuth();
+    const navigate = useNavigate();
+    const cerrarSesion = () => {
+        setAuthState('home');
+        localStorage.clear();
+        navigate('/')
+    }
+
     return(
         <Box sx={{flexGrow: 1}} >
             <AppBar position="static" sx={{minHeight:60, backgroundColor: "#01045f"}}>
                 <Toolbar variant="dense">
-                    <img src={Logo} style={{height:'75px', marginRight:'25px'}}/>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Recomendaciones Universitarias
+                    <img src={Logo} style={{height:'75px', marginRight:'25px'}} onClick={()=>{navigate('/')}}/>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={()=>{navigate('/')}}>
+                        Brújula Universitaria
                     </Typography>
                     {authState === 'access' && (
                         <></>
@@ -27,7 +34,7 @@ const NavBar = () =>{
                     )}
                     {authState === 'logged' && (
                         <>
-                            <Button variant="contained" color="error" component={Link} to='/' onClick={()=>{setAuthState('home')}} sx={{mr:2}}>Cerrar Sesión</Button>
+                            <Button variant="contained" color="error" onClick={()=>{cerrarSesion()}} sx={{mr:2}}>Cerrar Sesión</Button>
                             <Button color="inherit" component={Link} to="/becas" sx={{ border: '1px solid white' }}>
                                 Becas
                             </Button>

@@ -13,9 +13,8 @@ interface CardProps {
 
 const CardInfo: React.FC<CardProps> = ({title="Card", content="Contenido de la card"}) =>{
     return (
-        <Paper sx={{bgcolor:'#01045f', padding:1, borderRadius:1}} elevation={8}>
-            <Card sx={{maxWidth: 500, minWidth: 300, minHeight:150, maxHeight:500}} >
-                <CardActionArea>
+        <Paper sx={{bgcolor:'#01045f', maxWidth: '100%', padding:1, borderRadius:5}} elevation={8}>
+            <Card sx={{ minHeight:150, maxHeight:500}} >
                     <CardMedia/>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component='div'>
@@ -33,7 +32,6 @@ const CardInfo: React.FC<CardProps> = ({title="Card", content="Contenido de la c
                             ))
                         ) : null}
                     </CardContent>
-                </CardActionArea>
             </Card>
         </Paper>
     );

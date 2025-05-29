@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container, Typography, Grid, CircularProgress } from "@mui/material";
+import { Box, Container, Typography, Grid, CircularProgress, Button } from "@mui/material";
 import api from "../../api/Api";
+import { ArrowBack } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 type Scholarship = {
   Nombre: string;
@@ -12,6 +14,7 @@ const Becas: React.FC = () => {
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchScholarships = async () => {
@@ -55,6 +58,9 @@ const Becas: React.FC = () => {
             )}
           </Grid>
         )}
+        <Button variant='contained' startIcon={<ArrowBack/>} color='error' size='large' sx={{mb:2, mt:5}} onClick={()=>{navigate(-1)}}>
+            Regresar
+        </Button>
       </Container>
     </Box>
   );
