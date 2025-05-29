@@ -4,6 +4,7 @@ import Principal from './pages/Principal';
 import Form from './pages/Forms';
 import NavBar from './components/NavBar';
 import Auth from './pages/Access'
+import Detalles from './pages/Detalles';
 import { AuthProvider } from './context/AccesoContext';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path='/principal' element={<Principal/>}/>
           <Route path='/form' element={<Form/>}/>
           <Route path='/access' element={<Auth/>}/>
+          <Route path='/detalle' element={<Detalles/>}/>
         </Routes>
       </Router>
     </AuthProvider>
