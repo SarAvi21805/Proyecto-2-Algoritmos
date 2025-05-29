@@ -45,7 +45,7 @@ const Becas: React.FC = () => {
               <Typography>No hay becas disponibles en este momento.</Typography>
             ) : (
               scholarships.map((beca, index) => (
-                <Grid key={index} xs={12} sm={6} md={4} component="div">
+                <Grid key={index}component="div">
                   <Box sx={{ p: 2, borderRadius: 2, backgroundColor: '#01045f', color: 'white' }}>
                     <Typography variant="h6" sx={{ color: 'white' }}>{beca.nombre}</Typography>
                     <Typography variant="body2" sx={{ color: 'white' }}>{beca.descripcion}</Typography>

@@ -77,11 +77,16 @@ def getCarrera():
             COLLECT(r.nombreEspecifico) AS nombresEsp, COLLECT(r.duracion) AS duraciones
             RETURN c.nombre AS Carrera, c.descripcion AS Descripción, pensum AS Pensum, nombresEsp AS NombresEspecificos, duraciones AS Duraciones, universidades AS Universidades
             """
-            result = session.run(consulta, nombre=nombre_carrera)
-            carreras_info = []
-            for record in result:
-                carreras_info.append(dict(record))
-            return jsonify(carreras_info)
+            result = session.run(consulta, nombre=nombre_carrera).single()
+            respuesta = {
+                "Carrera": result["Carrera"],
+                "Descripción": result["Descripción"],
+                "Pensum": result["Pensum"],
+                "NombresEspecificos": result["NombresEspecificos"],
+                "Duraciones": result["Duraciones"],
+                "Universidades": result["Universidades"]
+            }
+            return jsonify(respuesta), 200
         
     except Neo4jError as e:
         print("Error al obtener información de la carrera: ", e)

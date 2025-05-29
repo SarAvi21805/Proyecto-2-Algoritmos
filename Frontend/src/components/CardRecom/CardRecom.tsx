@@ -1,5 +1,6 @@
 import React from "react";
 import { Paper, Card, CardActionArea, CardMedia, CardContent, Typography, Button, Box, CardActions } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
     carrera?: string;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const CardInfo: React.FC<Props> = ({ carrera='Sin datos', afinidad= 'Sin datos', image='../../../public/Unicap.svg'}) =>{
+    const navigate = useNavigate();
     return (
         <>
             <Paper sx={{bgcolor:'#01045f', padding:1, borderRadius:1}} elevation={24}>
@@ -23,7 +25,7 @@ const CardInfo: React.FC<Props> = ({ carrera='Sin datos', afinidad= 'Sin datos',
                             Afinidad: {afinidad}%
                         </Typography>
                         <CardActions sx={{display:'flex', justifyContent:'flex-end'}}>
-                            <Button variant="contained" color="success" size="small">Detalles</Button>
+                            <Button variant="contained" color="success" size="small" onClick={()=>{navigate(`/detalle/${carrera}`)}}>Detalles</Button>
                         </CardActions>
                     </CardContent>
                 </Card>

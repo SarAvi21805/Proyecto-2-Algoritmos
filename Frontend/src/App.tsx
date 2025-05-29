@@ -18,7 +18,7 @@ function App() {
           <Route path='/principal' element={<Principal/>}/>
           <Route path='/form' element={<Form/>}/>
           <Route path='/access' element={<Auth/>}/>
-          <Route path='/detalle' element={<Detalles/>}/>
+          <Route path='/detalle/:nombreCarrera' element={<Detalles/>}/>
           <Route path='/becas' element={<Becas/>}/>
         </Routes>
       </Router>
