@@ -15,7 +15,7 @@ password = os.getenv('NEO4J_PASSWORD')
 # Cargar el driver
 driver = GraphDatabase.driver(uri, auth=(user, password) )
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
+CORS(app, origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174"])
 
 @app.route('/', methods=['GET'])
 def index():
@@ -94,12 +94,12 @@ def getBecas():
         with driver.session() as session:
             consulta = """
             MATCH (b:Becas)
-            RETURN b.nombre AS Nombre, b.descripcion AS Descripcion, b.masInformacion AS MasInformacion
+            RETURN b AS beca
             """
             result = session.run(consulta)
             becas_info = []
             for record in result:
-                becas_info.append(dict(record))
+                becas_info.append(dict(record['beca'].items()))
             return jsonify(becas_info)
         
     except Neo4jError as e:
