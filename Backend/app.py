@@ -15,7 +15,7 @@ password = os.getenv('NEO4J_PASSWORD')
 # Cargar el driver
 driver = GraphDatabase.driver(uri, auth=(user, password) )
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174"])
+CORS(app, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
 
 @app.route('/', methods=['GET'])
 def index():
@@ -67,7 +67,7 @@ def getCarreras():
 def getCarrera():
     nombre_carrera = request.args.get("nombre")
     if not nombre_carrera:
-        return jsonify({"Error": "Falta el parámetro 'nombre"}), 400
+        return jsonify({"message": "Falta el parámetro 'nombre"}), 400
     
     try:
         with driver.session() as session:
@@ -94,12 +94,12 @@ def getBecas():
         with driver.session() as session:
             consulta = """
             MATCH (b:Becas)
-            RETURN b AS beca
+            RETURN b.nombre AS Nombre, b.descripcion AS Descripcion, b.masInformacion AS MasInformacion
             """
             result = session.run(consulta)
             becas_info = []
             for record in result:
-                becas_info.append(dict(record['beca'].items()))
+                becas_info.append(dict(record))
             return jsonify(becas_info)
         
     except Neo4jError as e:
@@ -110,7 +110,7 @@ def getBecas():
 def recomendation():
     correoIN = request.args.get('correo')
     if not correoIN:
-        return jsonify({"Error": "Falta el parámetro 'correo'"}), 400
+        return jsonify({"message": "Falta el parámetro 'correo'"}), 400
                 
     try:
         with driver.session() as session:
@@ -143,7 +143,7 @@ def recomendation():
             return jsonify(recomendaciones), 200
     except Neo4jError as e:
         print("Error al obtener recomendaciones: ", e)
-        return jsonify({'error': 'Error al obtener recomendaciones', "message": e}), 400
+        return jsonify({'message': 'Error al obtener recomendaciones', "message": e}), 400
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -185,7 +185,7 @@ def register():
         with driver.session() as session:
             result = session.run("MATCH (u:Usuario {correo: $correo}) RETURN u", correo=correo).single()
             if result:
-                return jsonify({'error': 'Correo ya registrado'}), 400
+                return jsonify({'message': 'Correo ya registrado'}), 400
             else:
                 hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
                 session.run("CREATE (u:Usuario {correo: $correo, contrasena: $contra, nombre: $nom})", correo=correo, contra=hashed_password, nom=nombre)
@@ -229,7 +229,7 @@ def changePassword():
             else:
                 return jsonify({'message': 'El usuario no existe'})
     except Exception as e:
-        return jsonify({'error': 'Error al cambiar la contraseña'})
+        return jsonify({'message': 'Error al cambiar la contraseña'})
 
 @app.route('/fillform', methods=['POST'])
 def fillform():
@@ -241,7 +241,7 @@ def fillform():
         pesoIN = q.get('peso')
         relacion = 'ES_ALGUIEN' if grupoIN.lower() == 'personalidad' else 'ES_BUENO_EN' if grupoIN.lower() == 'academicos' else 'LE_GUSTA'
         if not correoIN:
-            return jsonify({'error': 'Falta el correo'}), 400
+            return jsonify({'message': 'Falta el correo'}), 400
         query = f"""
                     MATCH (u:Usuario {{correo: $correo}})
                     MATCH (g:{grupoIN} {{name: $rasgo}})
@@ -259,7 +259,7 @@ def fillform():
                     ).single()
                     print(result['message'])
         except Exception as e:
-            return jsonify({'error': 'Error al crear la relacion'}), 400
+            return jsonify({'message': 'Error al crear la relacion'}), 400
     return jsonify({'message': 'Relaciones creadas correctamente'}), 200
 
 if __name__ == '__main__':

@@ -9,6 +9,7 @@ interface Recomendacion{
 }
 
 const Principal = () => {
+    const rutaImagenes = '../../../public/';
     const [recomendaciones, setRecomendaciones] = useState<Recomendacion[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -69,7 +70,7 @@ const Principal = () => {
                         recomendaciones.length > 0 ? (
                             recomendaciones.map((recomendacion) => (
                                 <Grid>
-                                    <CardRecom carrera={recomendacion.carrera} afinidad={Number(recomendacion.promedio.toFixed(2))}/>
+                                    <CardRecom carrera={recomendacion.carrera} afinidad={Number(recomendacion.promedio.toFixed(2))} image={rutaImagenes+ recomendacion.carrera + '.jpg'}/>
                                 </Grid>
                             ))
                         ):(
