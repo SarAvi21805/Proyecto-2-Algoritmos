@@ -1,6 +1,8 @@
 import { useState, type ChangeEvent, type MouseEvent } from "react";
 import {useNavigate} from "react-router-dom"
 import { useAuth } from "../../context/AccesoContext";
+import api from "../../api/Api";
+import axios from "axios";
 
 // Material UI imports
 import {
@@ -67,7 +69,7 @@ export default function Login() {
     setPasswordError(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setSuccess(null);
 
     if (emailError || !emailInput) {
@@ -84,11 +86,31 @@ export default function Login() {
 
     setFormValid(null);
 
-    setSuccess("Se ingresaron los datos correctamente");
-    setAuthState('logged');
-    setTimeout(() => {
-      navigate('/principal');
-    }, 1000);
+    try {
+      const response = await api.post('/login', {
+        correo: emailInput,
+        contrasena: passwordInput
+      },{
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      if(response.status === 200){
+        localStorage.setItem('correo', response.data.usuario.correo)
+        setSuccess('Inicio de sesión existoso!')
+        setAuthState('logged');
+        setTimeout(() => {
+          navigate('/principal');
+        }, 1000);
+      }
+    } catch (error) {
+        if(axios.isAxiosError(error)){
+          const errorMessage = error.response?.data?.message || "Error al iniciar sesión";
+          setFormValid(errorMessage);
+        }else{
+          setFormValid('Error desconocido al iniciar sesión');
+        }
+    }
   };
 
   return (

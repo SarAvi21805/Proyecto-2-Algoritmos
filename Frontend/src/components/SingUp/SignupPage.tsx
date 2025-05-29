@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent } from "react";
-import {Link} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 
 // Material UI Imports
 import {
@@ -24,6 +24,7 @@ const isEmail = (email: string): boolean =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   // Inputs
@@ -95,6 +96,9 @@ export default function SignUp() {
 
     setFormValid(null);
     setSuccess("Se ingresaron los datos correctamente");
+    setTimeout(() => {
+      navigate('/form');
+    }, 1000);
   };
 
   return (
@@ -166,8 +170,6 @@ export default function SignUp() {
           fullWidth
           startIcon={<LoginIcon />}
           onClick={handleSubmit}
-          component = {Link}
-          to= "/form"
         >
           Iniciar Sesión
         </Button>

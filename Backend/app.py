@@ -174,6 +174,25 @@ def login():
         print('Error al hacer login:', e)
         return jsonify({"message": e})
 
+#Registro de usuarios
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    correo = data.get('correo')
+    nombre = data.get('nombre')
+    contrasena = data.get('contrasena')
+    try:
+        with driver.session() as session:
+            result = session.run("MATCH (u:Usuario {correo: $correo}) RETURN u", correo=correo).single()
+            if result:
+                return jsonify({'error': 'Correo ya registrado'}), 400
+            else:
+                hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                session.run("CREATE (u:Usuario {correo: $correo, contrasena: $contra, nombre: $nom})", correo=correo, contra=hashed_password, nom=nombre)
+                return jsonify({'message': 'Usuario creado exitosamente'}), 200
+    except Neo4jError as e:
+        return jsonify({"message": 'Error agregndo al usuario' + e}), 400
+
 #Cambio de contraseña
 @app.route('/changePassword', methods=['PUT'])
 def changePassword():
