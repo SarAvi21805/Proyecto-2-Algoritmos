@@ -18,6 +18,8 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LoginIcon from "@mui/icons-material/Login";
+import axios from "axios";
+import api from "../../api/Api";
 
 //Validacion de correo
 const isEmail = (email: string): boolean =>
@@ -76,7 +78,7 @@ export default function SignUp() {
     }
   };
 
-  const handleSubmit = (): void => {
+  const handleSubmit = async () => {
     setSuccess(null);
 
     if (usernameError || !usernameInput) {
@@ -94,11 +96,33 @@ export default function SignUp() {
       return;
     }
 
-    setFormValid(null);
-    setSuccess("Se ingresaron los datos correctamente");
-    setTimeout(() => {
-      navigate('/form');
-    }, 1000);
+        try {
+      const response = await api.post('/register', {
+        correo: emailInput,
+        contrasena: passwordInput,
+        nombre: usernameInput
+      },{
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      if(response.status === 200){
+        localStorage.setItem('correo', emailInput)
+        setFormValid(null);
+        setSuccess('Cuenta creada correctamente!')
+        setTimeout(() => {
+          navigate('/form');
+        }, 1000);
+      }
+    } catch (error) {
+        console.log(error)
+        if(axios.isAxiosError(error)){
+          const errorMessage = error.response?.data?.message || "Error al iniciar sesión";
+          setFormValid(errorMessage);
+        }else{
+          setFormValid('Error desconocido al iniciar sesión');
+        }
+    }
   };
 
   return (
