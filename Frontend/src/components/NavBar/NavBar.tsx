@@ -26,11 +26,13 @@ const NavBar = () =>{
                         <Button variant='contained' color="success" component={Link} to='/access' onClick={()=>{setAuthState('access')}}>Acceder</Button>
                     )}
                     {authState === 'logged' && (
-                        <Button variant="contained" color="error" component={Link} to='/' onClick={()=>{setAuthState('home')}}>Cerrar Sesión</Button>
+                        <>
+                            <Button variant="contained" color="error" component={Link} to='/' onClick={()=>{setAuthState('home')}} sx={{mr:2}}>Cerrar Sesión</Button>
+                            <Button color="inherit" component={Link} to="/becas" sx={{ border: '1px solid white' }}>
+                                Becas
+                            </Button>
+                        </>
                     )}
-                    <Button color="inherit" component={Link} to="/becas" sx={{ border: '1px solid white' }}>
-                        Becas
-                    </Button>
                 </Toolbar>
             </AppBar>
         </Box>

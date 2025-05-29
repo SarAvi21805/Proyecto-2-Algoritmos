@@ -3,9 +3,9 @@ import { Box, Container, Typography, Grid, CircularProgress } from "@mui/materia
 import api from "../../api/Api";
 
 type Scholarship = {
-  nombre: string;
-  descripcion: string;
-  masInformacion?: string;
+  Nombre: string;
+  Descripcion: string;
+  MasInformacion?: string;
 };
 
 const Becas: React.FC = () => {
@@ -47,8 +47,8 @@ const Becas: React.FC = () => {
               scholarships.map((beca, index) => (
                 <Grid key={index}component="div">
                   <Box sx={{ p: 2, borderRadius: 2, backgroundColor: '#01045f', color: 'white' }}>
-                    <Typography variant="h6" sx={{ color: 'white' }}>{beca.nombre}</Typography>
-                    <Typography variant="body2" sx={{ color: 'white' }}>{beca.descripcion}</Typography>
+                    <Typography variant="h6" sx={{ color: 'white' }}>{beca.Nombre}</Typography>
+                    <Typography variant="body2" sx={{ color: 'white' }}>{beca.Descripcion}</Typography>
                   </Box>
                 </Grid>
               ))
