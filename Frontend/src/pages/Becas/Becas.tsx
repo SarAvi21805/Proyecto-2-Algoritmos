@@ -11,27 +11,27 @@ type Scholarship = {
 };
 
 const Becas: React.FC = () => {
-  const [scholarships, setScholarships] = useState<Scholarship[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [scholarships, setScholarships] = useState<Scholarship[]>([]); // Listado de becas
+  const [loading, setLoading] = useState<boolean>(true); // Variable para mostrar el loading, inicialmente es true
+  const [error, setError] = useState<string | null>(null); // Variable para mostrar el error, inicialmente es null
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchScholarships = async () => {
       setError(null);
       try {
-        const response = await api.get<Scholarship[]>("/becas");
-        console.log("Scholarships response data:", response.data);
-        setScholarships(response.data);
+        const response = await api.get<Scholarship[]>("/becas"); // Llamada a la API para obtener las becas
+        console.log("Scholarships response data:", response.data); // Imprime en la consola los datos de la respuesta
+        setScholarships(response.data); // Actualiza el estado con los datos de la respuesta
       } catch (err) {
         console.error("Error fetching scholarships data:", err);
         setError("Error fetching scholarships data.");
       } finally {
-        setLoading(false);
+        setLoading(false); // Una vez que se ha realizado la llamada a la API, se establece la variable loading
       }
     };
 
-    fetchScholarships();
+    fetchScholarships(); // Llamada a la función que realiza la llamada a la API
   }, []);
 
   return (
@@ -40,14 +40,14 @@ const Becas: React.FC = () => {
         <Typography variant="h3" gutterBottom>
           Becas
         </Typography>
-        {loading && <CircularProgress />}
-        {error && <Typography color="error">{error}</Typography>}
+        {loading && <CircularProgress />} // Si la variable loading es true, se muestra el loading
+        {error && <Typography color="error">{error}</Typography>} // Si la variable error es distinto de null, se muestra el error
         {!loading && !error && (
           <Grid container spacing={3}>
-            {scholarships.length === 0 ? (
+            {scholarships.length === 0 ? ( // Si no hay becas, se muestra un mensaje
               <Typography>No hay becas disponibles en este momento.</Typography>
             ) : (
-              scholarships.map((beca, index) => (
+              scholarships.map((beca, index) => ( // Se itera sobre el listado de becas y se crea una serie de componentes para cada una con su información
                 <Grid key={index}component="div">
                   <Box sx={{ p: 2, borderRadius: 2, backgroundColor: '#01045f', color: 'white' }}>
                     <Typography variant="h6" sx={{ color: 'white' }}>{beca.Nombre}</Typography>
@@ -58,7 +58,7 @@ const Becas: React.FC = () => {
             )}
           </Grid>
         )}
-        <Button variant='contained' startIcon={<ArrowBack/>} color='error' size='large' sx={{mb:2, mt:5}} onClick={()=>{navigate(-1)}}>
+        <Button variant='contained' startIcon={<ArrowBack/>} color='error' size='large' sx={{mb:2, mt:5}} onClick={()=>{navigate(-1)}}> {/*Botón para regresar a la página anterior */}
             Regresar
         </Button>
       </Container>

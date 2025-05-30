@@ -2,13 +2,13 @@ import React from "react";
 import { Paper, Card, CardActionArea, CardMedia, CardContent, Typography, Button, Box, CardActions } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-interface Props {
+interface Props { //Propiedades del componente
     carrera?: string;
     afinidad?: number | string;
     image?: string;
 }
 
-const CardInfo: React.FC<Props> = ({ carrera='Sin datos', afinidad= 'Sin datos', image='../../../public/Unicap.svg'}) =>{
+const CardInfo: React.FC<Props> = ({ carrera='Sin datos', afinidad= 'Sin datos', image='../../../public/Unicap.svg'}) =>{ //Componente funcional con datos default en caso de no recibirlos
     const navigate = useNavigate();
     return (
         <>

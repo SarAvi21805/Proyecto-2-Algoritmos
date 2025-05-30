@@ -8,9 +8,9 @@ type HomeProps = {
 };
 
 const Home: React.FC<HomeProps> = ({title = "Inicio"}) => {
-    const {setAuthState} = useAuth();
+    const {setAuthState} = useAuth(); // Obtiene el estado de autenticación
     useEffect(()=>{
-        setAuthState('home')
+        setAuthState('home') // Establece el estado de autenticación
     },[])
 
     return( 

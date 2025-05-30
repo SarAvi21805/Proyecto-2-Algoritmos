@@ -10,12 +10,12 @@ import { useAuth } from "../../context/AccesoContext";
 
 
 const NavBar = () =>{
-    const {authState, setAuthState} = useAuth();
-    const navigate = useNavigate();
-    const cerrarSesion = () => {
-        setAuthState('home');
+    const {authState, setAuthState} = useAuth(); // Obtiene el estado de autenticación
+    const navigate = useNavigate(); // Obtiene la función para navegar entre rutas
+    const cerrarSesion = () => { // Función para cerrar sesión
+        setAuthState('home'); // Actualiza el estado de autenticación
         localStorage.clear();
-        navigate('/')
+        navigate('/') // Navega a la ruta principal
     }
 
     return(
@@ -26,13 +26,13 @@ const NavBar = () =>{
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={()=>{navigate('/')}}>
                         Brújula Universitaria
                     </Typography>
-                    {authState === 'access' && (
+                    {authState === 'access' && ( // Si el usuario está en pagina de acceso no mostrar nada
                         <></>
                     )}
-                    {authState === 'home' && (
+                    {authState === 'home' && ( // Si el usuario está en la pagina principal mostrar el boton de inicio de sesion
                         <Button variant='contained' color="success" component={Link} to='/access' onClick={()=>{setAuthState('access')}}>Acceder</Button>
                     )}
-                    {authState === 'logged' && (
+                    {authState === 'logged' && ( // Si el usuario está en la pagina de recomendaciones mostrar el boton de cerrar sesion y becas
                         <>
                             <Button variant="contained" color="error" onClick={()=>{cerrarSesion()}} sx={{mr:2}}>Cerrar Sesión</Button>
                             <Button color="inherit" component={Link} to="/becas" sx={{ border: '1px solid white' }}>

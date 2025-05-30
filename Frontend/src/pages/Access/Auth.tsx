@@ -10,10 +10,10 @@ import SignUp from "../../components/SingUp/SignupPage";
 import Login from "../../components/Login/LoginPage";
 
 export default function Auth(){
-    const [checked, setChecked] = useState(true);
+    const [checked, setChecked] = useState(true); // Estado default para el switch entre registrarse y login
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChecked(event.target.checked);
+        setChecked(event.target.checked); // Cambia el estado del switch
     };
     return(
         <div style={{maxWidth: 500, margin: "auto", padding:30 }}>
@@ -30,10 +30,10 @@ export default function Auth(){
                     inputProps={{ 'aria-label': 'controlled' }}
                 />
                 <br />
-                {checked ? (
+                {checked ? ( // Si el switch está activado muestra el componente de registro
                 <SignUp/>
                 ):(
-                <Login />
+                <Login /> // Si el switch está desactivado muestra el componente de login
                 )}
             </Paper>
         </div>

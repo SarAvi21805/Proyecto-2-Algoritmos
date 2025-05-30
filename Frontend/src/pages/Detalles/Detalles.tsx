@@ -5,7 +5,7 @@ import api from '../../api/Api';
 import { useEffect, useState } from 'react';
 import { ArrowBack } from '@mui/icons-material';
 
-interface Detalles{
+interface Detalles{ // interface para definir la estructura de los datos
     Carrera: string,
     Descripción: string,
     Pensum: string[],
@@ -15,16 +15,16 @@ interface Detalles{
 }
 
 export default function Detalles() {
-    const {nombreCarrera} = useParams<{nombreCarrera: string}>();
-    const [carrera, setCarrera] = useState<Detalles>();
-    const [loading, setLoading] = useState(true);
+    const {nombreCarrera} = useParams<{nombreCarrera: string}>(); // obtener el nombre de la carrera
+    const [carrera, setCarrera] = useState<Detalles>(); // estado para almacenar la carrera
+    const [loading, setLoading] = useState(true); // estado para mostrar el cargando
     const navigate = useNavigate();
     
 
     const getDetalles = async () =>{
         try {
-            const response = await api.get(`/carrera?nombre=${nombreCarrera}`);
-            const data = {
+            const response = await api.get(`/carrera?nombre=${nombreCarrera}`); // obtener la carrera
+            const data = { // convertir la respuesta a un objeto
                 Carrera: response.data.Carrera,
                 Descripción: response.data.Descripción,
                 Pensum: response.data.Pensum,
@@ -32,7 +32,7 @@ export default function Detalles() {
                 Duraciones: response.data.Duraciones,
                 Universidades: response.data.Universidades
             };
-            setCarrera(data);
+            setCarrera(data); // actualizar el estado
         } catch (error) {
             console.log(error)
             throw new Error('Error obteniendo los detalles')
@@ -42,25 +42,25 @@ export default function Detalles() {
 
     useEffect(()=>{
         if(!nombreCarrera){
-            setLoading(false);
+            setLoading(false); // si no hay carrera, no mostrar el cargando
         }
         if(nombreCarrera){
-            getDetalles();
-            setLoading(false);
+            getDetalles(); // obtener la carrera
+            setLoading(false); 
         }
-    }, [nombreCarrera]);
+    }, [nombreCarrera]); // ejecutar la función cuando cambie el nombre de la carrera
 
   return (
     <Container maxWidth="lg">
         <Box display="flex" justifyContent="center" mt={5}>
             <Paper elevation={6} sx={{p: 4,backgroundColor: '#01045f', borderRadius: 2,display: 'inline-block', mb:5}}>
                 {
-                    loading ? (
+                    loading ? ( // si está cargando, mostrar un mensaje
                         <Box textAlign="center" py={8}>
                             <CircularProgress size={60} />
                             <Typography sx={{ mt: 2 }}>Cargando recomendaciones...</Typography>
                         </Box>
-                    ):(
+                    ):( // si no está cargando, mostrar los detalles de la carrera
                         <>
                             <Typography gutterBottom sx={{ color: 'white', fontSize: 35, mb: 4 }}>
                             {carrera?.Carrera}
@@ -83,7 +83,7 @@ export default function Detalles() {
                                         Universidades en las que se imparte
                                         </Typography>
                                         {
-                                            carrera?.Pensum.map((pensum, index) =>(
+                                            carrera?.Pensum.map((pensum, index) =>( // mostrar los pensum, duraciones y universidades donde se imparte la carrera
                                                 <>
                                                     <Divider variant='middle'/>
                                                     <Typography variant="body2">Es impartida en la {carrera.Universidades[index]}, se le conoce como {carrera.NombresEspecificos[index]} </Typography>

@@ -4,14 +4,13 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import CardActionArea from '@mui/material/CardActionArea';
 
-interface CardProps {
+interface CardProps { //Propiedades que serán usadas en el componente
     title?: string;
     content?: string | string[];
 }
 
-const CardInfo: React.FC<CardProps> = ({title="Card", content="Contenido de la card"}) =>{
+const CardInfo: React.FC<CardProps> = ({title="Card", content="Contenido de la card"}) =>{ //Componente funcional que recibe las propiedades
     return (
         <Paper sx={{bgcolor:'#01045f', maxWidth: '100%', padding:1, borderRadius:5}} elevation={8}>
             <Card sx={{ minHeight:150, maxHeight:500}} >

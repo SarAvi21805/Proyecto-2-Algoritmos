@@ -81,12 +81,12 @@ export default function SignUp() {
   const handleSubmit = async () => {
     setSuccess(null);
 
-    if (usernameError || !usernameInput) {
+    if (usernameError || !usernameInput) { // si el campo de usuario esta vacio o no cumple con la validacion
       setFormValid("Nombre de usuario debe ser entre 5 - 15 caracteres.");
       return;
     }
 
-    if (emailError || !emailInput) {
+    if (emailError || !emailInput) { // si el campo de correo esta vacio o no cumple con la validacion
       setFormValid("Dirección de correo invalida.");
       return;
     }
@@ -97,30 +97,30 @@ export default function SignUp() {
     }
 
         try {
-      const response = await api.post('/register', {
+      const response = await api.post('/register', { // envio de datos al servidor para registrar usuario
         correo: emailInput,
         contrasena: passwordInput,
         nombre: usernameInput
       },{
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', // tipo de datos que se envian
         }
       })
       if(response.status === 200){
-        localStorage.setItem('correo', emailInput)
+        localStorage.setItem('correo', emailInput) // guardo el correo en el local storage
         setFormValid(null);
         setSuccess('Cuenta creada correctamente!')
         setTimeout(() => {
-          navigate('/form');
+          navigate('/form'); // redirecciono a la pagina de formulario
         }, 1000);
       }
     } catch (error) {
         console.log(error)
         if(axios.isAxiosError(error)){
-          const errorMessage = error.response?.data?.message || "Error al iniciar sesión";
+          const errorMessage = error.response?.data?.message || "Error al iniciar sesión"; // si el error es de axios muestra el error obtenido
           setFormValid(errorMessage);
         }else{
-          setFormValid('Error desconocido al iniciar sesión');
+          setFormValid('Error desconocido al iniciar sesión'); // si el error no es de axios muestra un mensaje de error desconocido
         }
     }
   };

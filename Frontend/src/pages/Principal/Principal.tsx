@@ -3,21 +3,21 @@ import { Alert, Box, CircularProgress, Container, Grid, Typography} from '@mui/m
 import CardRecom from '../../components/CardRecom';
 import api from '../../api/Api';
 
-interface Recomendacion{
+interface Recomendacion{ // interface para la recomendación
     carrera: string,
     promedio: number
 }
 
 const Principal = () => {
-    const rutaImagenes = '../../../public/';
-    const [recomendaciones, setRecomendaciones] = useState<Recomendacion[]>([]);
+    const rutaImagenes = '../../../public/'; // ruta base de las imagenes
+    const [recomendaciones, setRecomendaciones] = useState<Recomendacion[]>([]); // estado para almacenar las recomendaciones
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const getRecomendations = async (userName: string) =>{
         try {
-            const response = await api.get(`/recomendation?correo=${userName}`);
-            setRecomendaciones(response.data);
+            const response = await api.get(`/recomendation?correo=${userName}`); // obtener recomendaciones
+            setRecomendaciones(response.data); // actualizar estado
         } catch (error) {
             console.error(error)
             throw new Error('Error obteniendo recomendaciones');
@@ -40,7 +40,7 @@ const Principal = () => {
         getRecomendations(userEmail);
     }, []);
 
-    if (loading) {
+    if (loading) { // si la carga no ha terminado mostrar componente de carga
         return (
             <Box textAlign="center" py={8}>
                 <CircularProgress size={60} />
@@ -49,7 +49,7 @@ const Principal = () => {
         );
     }
 
-    if (error) {
+    if (error) { // si hubo un error mostrar mensaje de error
         return (
             <Container maxWidth="lg">
                 <Alert severity="error" sx={{ mt: 4 }}>
@@ -67,8 +67,8 @@ const Principal = () => {
                 </Typography>
                 <Grid container spacing={12} sx={{width:'100%', margin:0, mb:10}} justifyContent='center'>
                     {
-                        recomendaciones.length > 0 ? (
-                            recomendaciones.map((recomendacion) => (
+                        recomendaciones.length > 0 ? ( 
+                            recomendaciones.map((recomendacion) => ( // si hay recomendaciones mostrarlas mediante un map
                                 <Grid>
                                     <CardRecom carrera={recomendacion.carrera} afinidad={Number(recomendacion.promedio.toFixed(2))} image={rutaImagenes+ recomendacion.carrera + '.jpg'}/>
                                 </Grid>

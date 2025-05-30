@@ -10,10 +10,10 @@ import { AuthProvider } from './context/AccesoContext';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <NavBar></NavBar>
-        <Routes>
+    <AuthProvider> {/* Aqui se pasa el contexto a todas las paginas */}
+      <Router> {/* Aqui se define la ruta principal */}
+        <NavBar></NavBar> {/** La barra superior aparecerá en todas las vistas */}
+        <Routes> {/* Aqui se definen las rutas del programa*/}
           <Route path="/" element={<Home title='"El futuro pertenece a aquellos que creen en la belleza de sus sueños." - Eleanor Roosevelt'/>}/>
           <Route path='/principal' element={<Principal/>}/>
           <Route path='/form' element={<Form/>}/>

@@ -69,15 +69,15 @@ export default function Login() {
     setPasswordError(false);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async () => { // función para enviar el formulario
     setSuccess(null);
 
-    if (emailError || !emailInput) {
+    if (emailError || !emailInput) { // si el email no es válido o está vacío
       setFormValid("Correo invalido");
       return;
     }
 
-    if (passwordError || !passwordInput) {
+    if (passwordError || !passwordInput) { // si la contraseña no es válida o está vacía
       setFormValid(
         "Contraseña invalida. "
       );
@@ -87,25 +87,25 @@ export default function Login() {
     setFormValid(null);
 
     try {
-      const response = await api.post('/login', {
+      const response = await api.post('/login', { //Hacer llamada a la api enviando los datos de correo y contraseña
         correo: emailInput,
         contrasena: passwordInput
       },{
-        headers: {
-          'Content-Type': 'application/json',
+        headers: { 
+          'Content-Type': 'application/json', // Indicar que el contenido es json
         }
       })
-      if(response.status === 200){
-        localStorage.setItem('correo', response.data.usuario.correo)
-        setSuccess('Inicio de sesión existoso!')
-        setAuthState('logged');
+      if(response.status === 200){ // si la respuesta es exitosa
+        localStorage.setItem('correo', response.data.usuario.correo) // guardar el correo en el local storage
+        setSuccess('Inicio de sesión existoso!') // mostrar mensaje de inicio de sesión exitoso
+        setAuthState('logged'); // cambiar el estado de autenticación a true
         setTimeout(() => {
-          navigate('/principal');
+          navigate('/principal'); // redireccionar a la página principal
         }, 1000);
       }
     } catch (error) {
         if(axios.isAxiosError(error)){
-          const errorMessage = error.response?.data?.message || "Error al iniciar sesión";
+          const errorMessage = error.response?.data?.message || "Error al iniciar sesión"; // obtener el mensaje de error
           setFormValid(errorMessage);
         }else{
           setFormValid('Error desconocido al iniciar sesión');
