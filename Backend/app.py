@@ -21,64 +21,64 @@ CORS(app, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
 def index():
     return '-Inicio-'
 
-@app.route('/users', methods=['GET'])
+@app.route('/users', methods=['GET']) #Obtener a todos los usuarios
 def getUsers():
     try:
         with driver.session() as session:
             result = session.run('MATCH (p:Usuario) RETURN p')
             users = []
-            for record in result:
-                users.append(dict(record['p'].items()))
-            return jsonify(users)
+            for record in result: #Recorrer los registros
+                users.append(dict(record['p'].items())) #Convertir a un diccionario
+            return jsonify(users) #Retornar los usuarios
         
     except Neo4jError as e:
         print('Error obtener usuarios: ', e)
         return jsonify({"message": e})
 
-@app.route("/universidades", methods=["GET"])
+@app.route("/universidades", methods=["GET"]) #Obtener a todos los universidades
 def getUniversidades():
     try:
         with driver.session() as session:
-            result = session.run("MATCH (p:Universidad) RETURN p")
+            result = session.run("MATCH (p:Universidad) RETURN p") #Consultar la base de datos
             universidades = []
-            for record in result:
-                universidades.append(dict(record["p"].items()))
+            for record in result: #Recorrer los registros
+                universidades.append(dict(record["p"].items())) #Convertir a un diccionario
             return jsonify(universidades)
         
     except Neo4jError as e:
         print("Error obtener universidades: ", e)
         return jsonify({"message": e})
 
-@app.route("/carreras", methods=["GET"])
+@app.route("/carreras", methods=["GET"]) #Obtener a todos las carreras
 def getCarreras():
     try:
         with driver.session() as session:
             result = session.run("MATCH (p:Carrera) RETURN p")
             carreras = []
             for record in result:
-                carreras.append(dict(record["p"].items()))
-            return jsonify(carreras)
+                carreras.append(dict(record["p"].items())) #Convertir a un diccionario
+            return jsonify(carreras) #Retornar las carreras
     except Neo4jError as e:
-        print("Error obtener carreras: ", e)
+        print("Error obtener carreras: ", e) 
         return jsonify({"message" : e})
     
 # Obtener detalles de las carreras.
 @app.route("/carrera", methods=['GET'])
 def getCarrera():
-    nombre_carrera = request.args.get("nombre")
-    if not nombre_carrera:
+    nombre_carrera = request.args.get("nombre") #Obtener el nombre de la carrera
+    if not nombre_carrera: #Si no se proporciona el nombre de la carrera retornar mensaje de error
         return jsonify({"message": "Falta el parámetro 'nombre"}), 400
     
     try:
         with driver.session() as session:
-            consulta = """
+            consulta = """ 
             MATCH (c:Carrera {nombre: $nombre})-[r:IMPARTIDA_EN]-(u:Universidad)
             WITH c, COLLECT(r.pensum) AS pensum, COLLECT(u.nombre) As universidades,
             COLLECT(r.nombreEspecifico) AS nombresEsp, COLLECT(r.duracion) AS duraciones
             RETURN c.nombre AS Carrera, c.descripcion AS Descripción, pensum AS Pensum, nombresEsp AS NombresEspecificos, duraciones AS Duraciones, universidades AS Universidades
-            """
-            result = session.run(consulta, nombre=nombre_carrera).single()
-            respuesta = {
+            """ #Consulta para obtener los detalles de la carrera
+            result = session.run(consulta, nombre=nombre_carrera).single() #Consultar la base de datos
+            respuesta = { #Crear un diccionario con los datos
                 "Carrera": result["Carrera"],
                 "Descripción": result["Descripción"],
                 "Pensum": result["Pensum"],
@@ -100,9 +100,9 @@ def getBecas():
             consulta = """
             MATCH (b:Becas)
             RETURN b.nombre AS Nombre, b.descripcion AS Descripcion, b.masInformacion AS MasInformacion
-            """
+            """ #Consulta para obtener las becas
             result = session.run(consulta)
-            becas_info = []
+            becas_info = [] #Crear una lista para almacenar la información de las becas
             for record in result:
                 becas_info.append(dict(record))
             return jsonify(becas_info)
@@ -111,15 +111,15 @@ def getBecas():
         print("Error al obtener información de las becas: ", e)
         return jsonify({"message": str(e)}), 500
 
-@app.route('/recomendation', methods=['GET'])
+@app.route('/recomendation', methods=['GET']) #Ruta para obtener recomendaciones
 def recomendation():
-    correoIN = request.args.get('correo')
+    correoIN = request.args.get('correo') #Obtener el correo del usuario
     if not correoIN:
-        return jsonify({"message": "Falta el parámetro 'correo'"}), 400
+        return jsonify({"message": "Falta el parámetro 'correo'"}), 400 #Si no se proporciona el correo retornar mensaje de error
                 
     try:
         with driver.session() as session:
-            result = session.run(
+            result = session.run( #Obtiene un porcentaje de afinidad en base a la puntuación máxima que puede tener una carrera y el peso de las relaciones de usuario a carrera
                     """
                         MATCH (u:Usuario {correo: $correo})-[r1]-(carac:Academicos|Personalidad|Hobbie)-[r2:CARACTERISTICA_DE]->(car:Carrera)
                         WITH car, sum(r1.peso + r2.peso) AS pesototal
@@ -136,13 +136,13 @@ def recomendation():
                             promedio AS Promedio
                         ORDER BY promedio DESC LIMIT 5
                     """, {'correo': correoIN}
-            )
+            ) #Consulta para obtener recomendaciones
             recomendaciones = []
-            for record in result:
+            for record in result: #Almacenar la información de las recomendaciones
                 recomendaciones.append(
                     {
-                        "carrera": record['Carrera'],
-                        "promedio": record['Promedio']
+                        "carrera": record['Carrera'], #Nombre de la carrera
+                        "promedio": record['Promedio'] #Promedio de afinidad
                     }
                 )
             return jsonify(recomendaciones), 200
@@ -150,31 +150,31 @@ def recomendation():
         print("Error al obtener recomendaciones: ", e)
         return jsonify({'message': 'Error al obtener recomendaciones', "message": e}), 400
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST']) #Ruta para iniciar sesión
 def login():
-    data = request.get_json()
-    contrasena = data.get('contrasena')
-    correo = data.get('correo')
+    data = request.get_json() #Obtener los datos del usuario
+    contrasena = data.get('contrasena') #Obtener la contraseña del usuario
+    correo = data.get('correo') #Obtener el correo del usuario
     try:
         with driver.session() as session:
             consulta = """
             MATCH (p:Usuario {correo: $correo})
             RETURN p.correo AS correo, p.contrasena AS contrasena, p.nombre AS nombre
-            """
-            result = session.run(consulta, correo=correo).single()
-            if not result:
-                return jsonify({'error': 'Usuario no encontrado'}), 404
-            contrasena_guardada = result['contrasena']
-            if bcrypt.checkpw(contrasena.encode('utf-8'), contrasena_guardada.encode('utf-8')):
+            """ #Consulta para obtener el usuario
+            result = session.run(consulta, correo=correo).single() #Ejecutar la consulta
+            if not result: 
+                return jsonify({'error': 'Usuario no encontrado'}), 404 #Si no se encuentra el usuario retornar mensaje de error
+            contrasena_guardada = result['contrasena'] #Obtener la contraseña guardada del usuario
+            if bcrypt.checkpw(contrasena.encode('utf-8'), contrasena_guardada.encode('utf-8')): #Verificar la contraseña
                 return jsonify({
                     'message': 'Inicio de sesión exitoso',
                     'usuario': {
                         'correo': result['correo'],
                         'nombre': result['nombre']
                     }
-                    }), 200
+                    }), 200 #Si la contraseña es correcta retornar mensaje de inicio de sesión exitoso
             else:
-                return jsonify({'respuesta': 'Contraseña incorrecta'}), 200
+                return jsonify({'respuesta': 'Contraseña incorrecta'}), 200 #Si la contraseña es incorrecta retornar mensaje de error
     except Neo4jError as e:
         print('Error al hacer login:', e)
         return jsonify({"message": e})
@@ -182,18 +182,18 @@ def login():
 #Registro de usuarios
 @app.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
+    data = request.get_json() #Obtener los datos del usuario
     correo = data.get('correo')
     nombre = data.get('nombre')
     contrasena = data.get('contrasena')
     try:
         with driver.session() as session:
-            result = session.run("MATCH (u:Usuario {correo: $correo}) RETURN u", correo=correo).single()
+            result = session.run("MATCH (u:Usuario {correo: $correo}) RETURN u", correo=correo).single() #Consulta para verificar si el correo ya existe
             if result:
-                return jsonify({'message': 'Correo ya registrado'}), 400
+                return jsonify({'message': 'Correo ya registrado'}), 400 #Si el correo ya existe retornar mensaje de error
             else:
-                hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-                session.run("CREATE (u:Usuario {correo: $correo, contrasena: $contra, nombre: $nom})", correo=correo, contra=hashed_password, nom=nombre)
+                hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt()).decode('utf-8') #Hash de la contraseña
+                session.run("CREATE (u:Usuario {correo: $correo, contrasena: $contra, nombre: $nom})", correo=correo, contra=hashed_password, nom=nombre) #Crear un nuevo usuario
                 return jsonify({'message': 'Usuario creado exitosamente'}), 200
     except Neo4jError as e:
         return jsonify({"message": 'Error agregndo al usuario' + e}), 400
@@ -201,14 +201,14 @@ def register():
 #Cambio de contraseña
 @app.route('/changePassword', methods=['PUT'])
 def changePassword():
-    # Get the new password from the request body
+    #Obtener los datos del usuario
     data = request.get_json()
     user = data.get('user')
     past_password = data.get('past_password')
     new_password = data.get('new_password')
-    # Hash the new password using bcrypt
+    # Verificar la contraseña actual
     try:
-        hasedPass = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        hasedPass = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8') #Hash de la contraseña
         with driver.session() as session:
             result = session.run(
                 """
@@ -216,7 +216,7 @@ def changePassword():
                 RETURN u.contrasena AS contrasena
                 """,
                 correo=user,
-            ).single()
+            ).single() # Consulta para verificar si el correo ya existe
             if result:
                 if bcrypt.checkpw(past_password.encode('utf-8'), result['contrasena'].encode('utf-8')):
                     session.run(
@@ -227,7 +227,7 @@ def changePassword():
                         """,
                         correo=user,
                         contrasena=hasedPass
-                    )
+                    ) # Actualizar la contraseña
                     return jsonify({'message': 'Contraseña actualizada correctamente'})
                 else:
                     return jsonify({'message': 'La contraseña antigua no es correcta'})
@@ -236,40 +236,40 @@ def changePassword():
     except Exception as e:
         return jsonify({'message': 'Error al cambiar la contraseña'})
 
-@app.route('/fillform', methods=['POST'])
+@app.route('/fillform', methods=['POST']) #Ruta para llenar el formulario
 def fillform():
     data = request.get_json()
-    correoIN = request.args.get('correo')
-    for q in data:
+    correoIN = request.args.get('correo') #Obtener el correo del usuario
+    for q in data: #Recorrer los datos del formulario
         grupoIN = q.get('grupo')
         rasgoIN = q.get('rasgo')
         pesoIN = q.get('peso')
         relacion = 'ES_ALGUIEN' if grupoIN.lower() == 'personalidad' else 'ES_BUENO_EN' if grupoIN.lower() == 'academicos' else 'LE_GUSTA'
         if not correoIN:
-            return jsonify({'message': 'Falta el correo'}), 400
+            return jsonify({'message': 'Falta el correo'}), 400 #Si no fue enviado un correo , devolver un error
         query = f"""
                     MATCH (u:Usuario {{correo: $correo}})
                     MATCH (g:{grupoIN} {{name: $rasgo}})
                     MERGE (u)-[:{relacion} {{peso: $peso}}]->(g)
                     RETURN 'relacion creada' as message
-                    """
+                    """ #Consulta para crear la relacion
         try:
             with driver.session() as session:
-                if pesoIN != 0:
+                if pesoIN != 0: #Si el peso no es 0 crear relaciones
                     result = session.run(
                         query,
                         correo = correoIN,
                         rasgo = rasgoIN,
                         peso = pesoIN,
                     ).single()
-                    print(result['message'])
+                    print(result['message']) #Imprimir el mensaje de la consulta
         except Exception as e:
-            return jsonify({'message': 'Error al crear la relacion'}), 400
-    return jsonify({'message': 'Relaciones creadas correctamente'}), 200
+            return jsonify({'message': 'Error al crear la relacion'}), 400 #Si hay un error devolver un error
+    return jsonify({'message': 'Relaciones creadas correctamente'}), 200 
 
-if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+if __name__ == '__main__': #Si se ejecuta el archivo directamente
+    app.run(debug=True, port=8080) #Ejecutar el servidor con debug activado y en el puerto 8080
 
-@atexit.register
+@atexit.register #Funcion para cerrar la sesion de neo4j
 def closeDriver():
     driver.close()
